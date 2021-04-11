@@ -5,11 +5,11 @@
 // Grab the width of the containing box
 // parseInt gets the integer from a string
 var width = parseInt(d3.select("#scatter").style("width"));
-console.log(width);
+//console.log(width);
 
 // Designate the height of the graph
 var height = width - width / 3.9;
-console.log(height);
+//console.log(height);
 
 var margin = 20;
 
@@ -25,4 +25,46 @@ var svg = d3
     .append("svg")
     .attr("width", width)
     .attr("height", height)
-    .attr("class", "chart")
+    .attr("class", "chart");
+
+var radius ;
+
+// This function updates the radius of the circle depending on the dimension of the window
+function radiusUpdate(){
+    if(width <= 530){
+        radius = 5;
+    }
+    else{
+        radius = 10;
+    }
+}
+
+radiusUpdate();
+
+// New element 
+svg.append("g").attr("class", "xText");
+
+// Dot notation will select all elements of class xText
+var xText = d3.select(".xText");
+
+// Dynamically update g.xText element
+function xTextUpdate(){
+    xText.attr(
+        "transform",
+        "translate(" +
+        ((width - labelArea) / 2 + labelArea) +
+        ", " +
+        (height - margin - tPadBot) +
+        ")"
+    )
+};
+
+xTextUpdate()
+
+xText
+    .append("text")
+    .attr("y", -26)
+    .attr("data-name", "poverty")
+    .attr("data-axis", "x")
+    .attr("class", "aText active x")
+    .text("In Poverty (%)")
