@@ -41,6 +41,8 @@ function radiusUpdate(){
 
 radiusUpdate();
 
+// X axis 
+
 // New element 
 svg.append("g").attr("class", "xText");
 
@@ -61,6 +63,8 @@ function xTextUpdate(){
 
 xTextUpdate()
 
+// X axis text
+
 xText
     .append("text")
     .attr("y", -26)
@@ -68,3 +72,58 @@ xText
     .attr("data-axis", "x")
     .attr("class", "aText active x")
     .text("In Poverty (%)")
+
+xText
+    .append("text")
+    .attr("y", 0)
+    .attr("data-name", "age")
+    .attr("data-axis", "x")
+    .attr("class", "aText inactive x")
+    .text("Age (Median)")
+
+xText
+    .append("text")
+    .attr("y", 26)
+    .attr("data-name", "income")
+    .attr("data-axis", "x")
+    .attr("class", "aText inactive x")
+    .text("Household Income (Median)")
+
+// Y axis
+
+var leftTextX = margin + tPadLeft;
+var leftTextY = (height + labelArea) / 2 - labelArea;
+
+svg.append("g").attr("class", "yText");
+
+var yText = d3.select(".yText");
+
+function yTextUpdate(){
+    yText.attr("transform", `translate(${leftTextX}, ${leftTextY}) rotate(-90)`)
+}
+
+yTextUpdate();
+
+yText
+    .append("text")
+    .attr("y", -26)
+    .attr("data-name", "income")
+    .attr("data-axis", "y")
+    .attr("class", "aText active y")
+    .text("Obesity (%)")
+
+yText
+    .append("text")
+    .attr("y", 0)
+    .attr("data-name", "smokes")
+    .attr("data-axis", "y")
+    .attr("class", "aText inactive y")
+    .text("Smokes (%)")
+
+yText
+    .append("text")
+    .attr("y", 26)
+    .attr("data-name", "healthcare")
+    .attr("data-axis", "y")
+    .attr("class", "aText inactive y")
+    .text("Lack Healthcare (%)")
