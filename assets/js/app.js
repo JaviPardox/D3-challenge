@@ -167,4 +167,75 @@ function visualize(data){
     
     svg.call(toolTip);
 
+    function xMinMax(){
+        xMin = d3.min(data, function(d){
+            return parseFloat(d[curX]) * 0.90;
+        })
+
+        xMax = d3.max(data, function(d){
+            return parseFloat(d[curX]) * 1.10;
+        })
+    }
+
+    function yMinMax(){
+        yMin = d3.min(data, function(d){
+            return parseFloat(d[curY]) * 0.90;
+        })
+
+        yMax = d3.max(data, function(d){
+            return parseFloat(d[curY]) * 1.10;
+        })
+    }
+
+    // Change classes and appearances of label text when clicked
+    function labelChange(axis, clicked){
+        d3.selectAll(".aText")
+        .filter("." + axis)
+        .filter(".active")
+        .classed("active", false)
+        .classed("inactive", true);
+
+        clickedText.classed("inactive", false).classed("active", true);
+    }
+
+    // First grab min and max values of x and y
+    xMinMax();
+    yMinMax();
+
+    var xScale = d3
+        .scaleLinear()
+        .domain([xMin, xMax])
+        .range([margin + labelArea, width - margin])
+    var yScale = d3
+        .scaleLinear()
+        .domain([yMin, yMax])
+        .range([height - margin - labelArea, margin])
+
+    var xAxis = d3.axisBottom(xScale);
+    var yAxis = d3.axisLeft(yScale);
+
+    function tickCount(){
+        if(width <= 500){
+            xAxis.ticks(5);
+            yAxis.ticks(5);
+        }
+        else{
+            xAxis.ticks(10);
+            yAxis.ticks(10);
+        }
+    }
+
+    tickCount();
+
+    svg
+        .append("g")
+        .call(xAxis)
+        .attr("class", "xAxis")
+        .attr("transform", `translate(0, ${height - margin - labelArea})`)
+    
+    svg
+        .append("g")
+        .call(yAxis)
+        .attr("class", "yAxis")
+        .attr("transform", `translate(${margin + labelArea}, 0)`)
 }
