@@ -107,7 +107,7 @@ yTextUpdate();
 yText
     .append("text")
     .attr("y", -26)
-    .attr("data-name", "income")
+    .attr("data-name", "obesity")
     .attr("data-axis", "y")
     .attr("class", "aText active y")
     .text("Obesity (%)")
@@ -152,14 +152,14 @@ function visualize(data){
         .html(function(d){
             var theX;
             var theState = `<div>${d.state}</div>`;
-            var theY = `<div>${curY}:${d[curY]}%</div>`;
+            var theY = `<div>${curY}: ${d[curY]}%</div>`;
             
             if(curX === "poverty"){
-                theX = `<div> ${curX}: ${d[curX]}%</div>`
+                theX = `<div> ${curX}: ${d[curX]}%</div>`;
             }
 
             else{
-                theX = `<div> ${curX}: ${parseFloat(d[curX]).toLocaleString("en")}</div>`
+                theX = `<div> ${curX}: ${parseFloat(d[curX]).toLocaleString("en")}</div>`;
             }
 
             return theState + theX + theY;
@@ -188,7 +188,7 @@ function visualize(data){
     }
 
     // Change classes and appearances of label text when clicked
-    function labelChange(axis, clicked){
+    function labelChange(axis, clickedText){
         d3.selectAll(".aText")
         .filter("." + axis)
         .filter(".active")
@@ -238,4 +238,119 @@ function visualize(data){
         .call(yAxis)
         .attr("class", "yAxis")
         .attr("transform", `translate(${margin + labelArea}, 0)`)
+
+    var circles = svg.selectAll("g circles").data(data).enter()
+
+    circles.append("circle")
+        .attr("cx", function(d){
+            return xScale(d[curX]);
+        })
+        .attr("cy", function(d){
+            return yScale(d[curY]);
+        })
+        .attr("r", radius)
+        .attr("class", function(d){
+            return `stateCircle ${d.abbr}`
+        })
+        .on("mouseover", function(d){
+            toolTip.show(d, this);
+            d3.select(this).style("stroke", "#323232");
+        })
+        .on("mouseout", function(d){
+            toolTip.hide(d);
+            d3.select(this).style("stroke", "#e3e3e3");
+        })
+
+    circles
+        .append("text")
+        .text(function(d){
+            return d.abbr
+        })
+        .attr("dx", function(d){
+            return xScale(d[curX])
+        })
+        .attr("dy", function(d){
+            return yScale(d[curY]) + (radius / 2.5)
+        })
+        .attr("font-size", radius)
+        .attr("class", "stateText")
+        .on("mouseover", function(d){
+            toolTip.show(d)
+            d3.select(`.${d.abbr}`).style("stroke","#323232");
+        })
+        .on("mouseout", function(d){
+            toolTip.hide(d)
+            d3.select(`.${d.abbr}`).style("stroke","#e3e3e3");
+        })
+
+        // Make chart dynamic
+        d3.selectAll(".aText").on("click",function(){
+            var self = d3.select(this);
+
+            if(self.classed("inactive")){
+                var axis = self.attr("data-axis")
+                var name = self.attr("data-name")
+
+                // Move circles
+                if(axis === "x"){
+                    curX = name;
+                    xMinMax();
+                    xScale.domain([xMin, xMax]);
+                    svg.select(".xAxis").transition().duration(300).call(xAxis);
+
+                    d3.selectAll("circle").each(function(){
+                        d3.select(this)
+                        .transition()
+                        .attr("cx", function(d){
+                            return xScale(d[curX])
+                        })
+                        .duration(300)
+                    })
+                
+                    // Move tags
+                    d3.selectAll(".stateText").each(function(){
+                        d3.select(this)
+                        .transition()
+                        .attr("dx", function(d){
+                            return xScale(d[curX])
+                        })
+                        .duration(300)
+                    })
+
+                    labelChange(axis, self);
+
+                }
+                
+                else{
+                    curY = name;
+                    yMinMax();
+                    yScale.domain([yMin, yMax]);
+                    svg.select(".yAxis").transition().duration(300).call(yAxis);
+                    
+                    d3.selectAll("circle").each(function(){
+                        d3.select(this)
+                        .transition()
+                        .attr("cy", function(d){
+                            return yScale(d[curY])
+                        })
+                        .duration(300)
+                    })
+
+                    d3.selectAll(".stateText").each(function(){
+                        d3.select(this)
+                        .transition()
+                        .attr("dy", function(d){
+                            return yScale(d[curY]) + (radius / 3)
+                        })
+                        .duration(300)
+                    })
+
+                    labelChange(axis, self);
+                }
+
+            }
+
+        });
+
+        d3.select(window).on
 }
