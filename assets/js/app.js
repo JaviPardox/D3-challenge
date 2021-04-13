@@ -352,5 +352,41 @@ function visualize(data){
 
         });
 
-        d3.select(window).on
+        d3.select(window).on("resize", resize);
+
+        function resize(){
+            width = parseInt(d3.select("#scalar"),style("width"))
+            height = width - width / 3.0;
+            leftTextY = (height + labelArea) / 2 - labelArea;
+
+            svg.attr("width", width).attr("height", height)
+            xScale.range([margin + labelArea, width - margin])
+            yScale.range([height - margin - labelArea, maring])
+
+            svg.select(".xAxis").call(xAxis).attr("transform", `translate(0,${height-margin-labelArea})`);
+            svg.select(".yAxis").call(yAxis);
+
+            tickCount();
+            xTextRefresh()
+            yTextRefresh()
+            crGet()
+
+            d3.selectAll("circle").attr("cy", function(d){
+                return yScale(d[curY])
+            })
+            .attr("cx", function(d){
+                return xScale(d[curX])
+            })
+            .attr("r", function(){
+                return circRadius
+            })
+
+            d3.selectAll(".stateText").attr("dy", function(d){
+                return yScale(d[curY]) + radius / 3;
+            })
+            .attr("dx", function(d){
+                return xScale(d[curX])
+            })
+            .attr("r", circRadius / 3);
+        }
 }
