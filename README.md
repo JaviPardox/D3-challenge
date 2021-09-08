@@ -1,4 +1,4 @@
-# D3 Times
+# Health risks vs age income
 The goal of this project is, by using the data set based on 2014 ACS 1-year estimates from the US Census Bureau, to create a website with an interactive graph with the use of JavaScript and D3. The current data set includes data on rates of income, obesity, poverty, smoking, age, and lacking of healthcare. 
 
 ## Index.html
